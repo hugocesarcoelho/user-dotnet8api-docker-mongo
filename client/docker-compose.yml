@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  userserviceapi:
+    image: ${DOCKER_REGISTRY-}userserviceapi
+    build:
+      context: .
+      dockerfile: ../src/UserServiceApi/Dockerfile
+  mongo:
+    image: mongo:latest
+    container_name: mongodb-container
+    command: mongod --auth --bind_ip_all
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    environment:
+      MONGO_INITDB_DATABASE: UserDB
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: Test123!
+
+volumes:
+  mongodb-data:
+    driver: local
